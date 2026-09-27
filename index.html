@@ -149,7 +149,39 @@ h1 em{font-style:normal;color:var(--accent-label)}
 .later{display:flex;align-items:center;gap:22px;padding:22px 30px;border-radius:18px;border:1px dashed var(--line-2);font-size:24px;color:var(--muted)}
 .later b{color:var(--text)}
 
-/* 8 · close */
+/* 8 · market */
+.mk{display:grid;grid-template-columns:1fr 1.2fr;gap:28px;margin-top:8px}
+.mk-col{display:flex;flex-direction:column;gap:16px;padding:24px 28px;border-radius:20px;background:var(--paper);border:1px solid var(--line)}
+.mk-k{font-family:var(--arcade);font-size:12px;letter-spacing:.1em;color:var(--accent-label);text-transform:uppercase}
+.zoom{display:flex;flex-direction:column;position:relative;padding-left:22px;border-left:2px solid var(--line-2)}
+.zr{position:relative;display:grid;grid-template-columns:190px 1fr;gap:16px;align-items:center;padding:15px 0}
+.zr::before{content:"";position:absolute;left:-29px;top:50%;width:12px;height:12px;border-radius:50%;background:var(--shell);border:2px solid var(--accent-label);transform:translateY(-50%)}
+.zr+.zr{border-top:1px dashed var(--line)}
+.zr b{font-size:40px;font-weight:700;letter-spacing:-.02em;white-space:nowrap}
+.zr b small{font-size:20px;color:var(--muted);font-weight:500}
+.zr strong{display:block;font-size:19px}
+.zr span{font-size:16px;color:var(--muted)}
+.zr.hot b{color:var(--accent-label)}
+.zr.hot::before{background:var(--accent-label)}
+.expand{display:flex;gap:14px;align-items:baseline;font-size:17px;color:var(--muted);line-height:1.4;padding-top:6px;border-top:1px solid var(--line)}
+.expand b{color:var(--text);font-weight:600}
+.steps{display:grid;grid-template-columns:repeat(3,1fr);gap:26px}
+.st{position:relative;display:flex;flex-direction:column;gap:8px;padding:20px 18px 22px;border-radius:14px;background:var(--paper-2);border:1px solid var(--line-2)}
+.st:not(:last-child)::after{content:"→";position:absolute;right:-22px;top:26px;color:var(--accent-label);font-size:20px;font-weight:700}
+.st .n{font-family:var(--arcade);font-size:10px;color:var(--faint)}
+.st b{font-size:21px;font-weight:800;line-height:1.15}
+.st b em{font-style:normal;color:var(--gold)}
+.st span:last-child{font-size:15px;color:var(--muted);line-height:1.35}
+.facts{display:grid;grid-template-columns:170px 1fr;gap:10px 18px;margin:4px 0 0;font-size:17px;line-height:1.4}
+.facts dt{font-weight:700;color:var(--text)}
+.facts dd{margin:0;color:var(--muted)}
+.ask{display:flex;align-items:center;gap:26px;padding:22px 28px;margin-top:8px;border-radius:18px;background:linear-gradient(110deg,#421c2d,#2b1522);border:1px solid var(--accent-label)}
+.ask .who{display:flex;gap:10px}
+.ask i{font-style:normal;font-size:15px;font-weight:700;padding:7px 14px;border-radius:999px;background:var(--pam);color:#0e1a14}
+.ask i.p{background:var(--gold);color:#1d1606}
+.ask .txt{font-size:22px;font-weight:700}
+
+/* 9 · close */
 .close{align-items:center;justify-content:center;gap:34px;padding-top:100px}
 .team{display:flex;gap:40px}
 .member{width:300px;display:flex;flex-direction:column;align-items:center;gap:6px;text-align:center}
@@ -369,7 +401,36 @@ h1 em{font-style:normal;color:var(--accent-label)}
     <div class="head" style="padding-top:34px"><!-- lines up with slides that have a kicker -->
       <h1>How big, <em>and who’s first</em></h1>
     </div>
-    <aside class="notes"><p class="cue">[Content to come.]</p></aside>
+    <div class="mk">
+      <div class="mk-col">
+        <span class="mk-k">Market size</span>
+        <div class="zoom">
+          <div class="zr"><b class="mono">$4.8B</b><div><strong>Global biosimulation market, 2026</strong><span>research software and services</span></div></div>
+          <div class="zr"><b class="mono">2,154</b><div><strong>Fly labs listed worldwide</strong><span>our starting community</span></div></div>
+          <div class="zr hot"><b class="mono">~$1.3M<small>/yr</small></b><div><strong>Modeled academic opportunity</strong><span>215 relevant labs × $6,000 / year</span></div></div>
+        </div>
+        <div class="expand"><span class="mk-k" style="color:var(--faint)">Then</span><span>validated experiments for <b>commercial screening providers</b> and <b>neuroscience biotech teams</b></span></div>
+      </div>
+      <div class="mk-col">
+        <span class="mk-k">Go-to-market</span>
+        <div class="steps">
+          <div class="st"><span class="n">01</span><b>3 research partners</b><span>validate one dopamine experiment</span></div>
+          <div class="st"><span class="n">02</span><b><em>$15k</em> pilots</b><span>one dopamine experiment vs. the customer's measurements → reproducible report</span></div>
+          <div class="st"><span class="n">03</span><b>Annual contracts</b><span>software and support</span></div>
+        </div>
+        <dl class="facts">
+          <dt>First customers</dt><dd>Fly neuroscience labs · behavioral-screening providers</dd>
+          <dt>How we reach them</dt><dd>Direct outreach to lab heads and screening directors · scientific collaborations · screening-provider partnerships</dd>
+        </dl>
+      </div>
+    </div>
+    <div class="ask"><span class="mk-k">Our ask</span><span class="who"><i>Validation partner</i><i class="p">Pilot partner</i><i class="p">Pilot partner</i></span><span class="txt">one validation partner and two commercial pilot partners</span></div>
+    <p class="foot" style="margin-top:0">Market: 2026 biosimulation estimates range $4.3B–$5.8B across industry reports. Labs: FlyBase Fly Lab List.</p>
+    <aside class="notes">
+      <p><b>Market size.</b> The global biosimulation market is about $4.8 billion in 2026, covering research software and services. Our starting community: 2,154 listed fly labs worldwide. Our modeled academic opportunity is about $1.3 million a year, assuming 215 relevant labs at $6,000 a year. Then we expand to validated experiments for commercial screening providers and neuroscience biotech teams.</p>
+      <p><b>Go-to-market.</b> Three research partners, then $15k commercial evaluation pilots, then annual contracts. First customers are fly neuroscience labs and behavioral-screening providers. We start by validating one experiment with a research partner. Each pilot evaluates one dopamine experiment against the customer's measurements and delivers a reproducible comparison report. We reach buyers through direct outreach to lab heads and screening directors, scientific collaborations, and screening-provider partnerships, and convert successful pilots into annual software-and-support agreements.</p>
+      <p><b>Our ask:</b> one validation partner and two commercial pilot partners.</p>
+    </aside>
   </section>
 
   <!-- 9 · CLOSE -->
