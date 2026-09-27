@@ -1,0 +1,454 @@
+<!doctype html>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Chanjs Pitch</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;800;900&family=JetBrains+Mono:wght@500;700&family=Press+Start+2P&display=swap">
+<style>
+/* Burgundy shell from chanjs.vercel.app/embodied/sandbox; science colors match the site's neuron groups. */
+:root{color-scheme:dark;
+  --shell:#170b13;--paper:#25131f;--paper-2:#2e1826;--scene:#120911;--text:#f3e5df;--muted:#c2a7b0;--faint:#8e7381;
+  --line:#f6bacb20;--line-2:#f6bacb3a;--accent:#751b3b;--accent-label:#e49bb3;--accent-soft:#421c2d;--primary-ink:#fff5f0;
+  --food:#ffad58;--danger:#78b9ed;--approach:#c6ff3c;--avoid:#ff6aab;--pam:#39be84;--ppl1:#ed5264;--gold:#d1ab45;
+  --sans:Inter,-apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif;--mono:"JetBrains Mono",ui-monospace,Consolas,monospace;
+  --arcade:"Press Start 2P","Courier New",monospace}
+*{box-sizing:border-box}
+html,body{height:100%;margin:0;overflow:hidden;background:#0c0509;color:var(--text);font-family:var(--sans)}
+.stage{position:absolute;left:50%;top:50%;width:1600px;height:900px;transform:translate(-50%,-50%);transform-origin:center;overflow:hidden;
+  background:radial-gradient(1100px 620px at 88% -8%,#421c2d99,transparent 62%),radial-gradient(900px 500px at -5% 110%,#2a0f1d,transparent 60%),var(--shell)}
+.stage::before{content:"";position:absolute;inset:0;pointer-events:none;opacity:.5;
+  background:linear-gradient(var(--line) 1px,transparent 1px) 0 0/80px 80px,linear-gradient(90deg,var(--line) 1px,transparent 1px) 0 0/80px 80px;
+  mask-image:radial-gradient(1000px 700px at 70% 30%,#000 10%,transparent 75%)}
+.slide{position:absolute;inset:0;padding:118px 80px 64px;display:none;flex-direction:column;gap:28px}
+.slide.on{display:flex;animation:in .35s ease both}
+@keyframes in{from{opacity:.001;transform:translateY(8px)}to{opacity:1;transform:none}}
+aside.notes{display:none}
+
+/* chrome */
+.chrome{position:absolute;top:34px;left:80px;right:80px;display:flex;align-items:center;gap:14px;z-index:5;pointer-events:none}
+.chrome img{width:44px;height:44px}
+.chrome b{font-weight:900;letter-spacing:.16em;font-size:17px}
+.chrome span{color:var(--muted);font-size:14px}
+.chrome .count{margin-left:auto;font-family:var(--arcade);font-size:11px;color:var(--accent-label);letter-spacing:.1em}
+.progress{position:absolute;left:0;bottom:0;height:4px;background:var(--accent-label);transition:width .3s;z-index:5}
+.stage.dark .chrome,.stage.dark .progress,.stage.nochrome .chrome{opacity:0}
+
+/* type */
+.kicker{font-family:var(--arcade);font-size:13px;letter-spacing:.1em;color:var(--accent-label);text-transform:uppercase}
+h1{margin:0;font-weight:900;font-size:66px;line-height:1.02;letter-spacing:-.025em;text-wrap:balance;max-width:1250px}
+h1 em{font-style:normal;color:var(--accent-label)}
+.lede{margin:0;font-size:25px;line-height:1.4;color:var(--muted);max-width:1000px}
+.head{display:flex;flex-direction:column;gap:18px}
+.mono{font-family:var(--mono);font-variant-numeric:tabular-nums}
+.tag{display:inline-flex;align-items:center;gap:8px;padding:5px 12px;border-radius:999px;border:1px solid var(--line-2);font-size:14px;font-weight:600;color:var(--muted);white-space:nowrap}
+.dot{width:12px;height:12px;border-radius:50%;flex:0 0 12px;background:currentColor}
+.foot{margin-top:auto;font-size:15px;color:var(--faint);line-height:1.45}
+
+/* 1 · hook */
+.hook{padding:0;background:#000}
+.hook video{position:absolute;inset:0;width:100%;height:100%;object-fit:contain;background:#000}
+.hook .q{position:absolute;inset:auto 0 0;padding:120px 80px 80px;background:linear-gradient(transparent,#000d 55%);font-size:64px;font-weight:900;letter-spacing:-.02em;text-align:center;text-wrap:balance}
+.hook .ph{position:absolute;inset:0;display:grid;place-items:center;color:#4a3240;font-family:var(--arcade);font-size:14px;letter-spacing:.1em}
+
+/* 2 · field */
+.chain{display:grid;grid-template-columns:repeat(5,1fr);gap:22px;margin-top:14px}
+.step{position:relative;background:var(--paper);border:1px solid var(--line);border-radius:20px;padding:26px 24px 24px;display:flex;flex-direction:column;gap:14px;min-height:380px}
+.step:not(:last-child)::after{content:"";position:absolute;right:-18px;top:62px;width:14px;height:14px;border-top:2px solid var(--line-2);border-right:2px solid var(--line-2);transform:rotate(45deg)}
+.step .n{font-family:var(--arcade);font-size:11px;color:var(--faint)}
+.step svg{width:64px;height:64px;fill:none;stroke:var(--text);stroke-width:1.6;stroke-linecap:round;stroke-linejoin:round}
+.step h3{margin:0;font-size:27px;font-weight:800}
+.step p{margin:0;font-size:18px;line-height:1.42;color:var(--muted)}
+.step .stat{margin-top:auto;font-family:var(--mono);font-size:17px;color:var(--text);border-top:1px solid var(--line);padding-top:14px}
+.step.missing{background:linear-gradient(160deg,#421c2d,#25131f);border:2px dashed var(--accent-label)}
+.step.missing svg{stroke:var(--accent-label)}
+.step.missing h3,.step.missing .n{color:var(--accent-label)}
+
+/* 3 · question */
+.flow{display:grid;grid-template-columns:1fr 70px 1fr 70px 1fr;align-items:stretch;margin-top:30px}
+.node{background:var(--paper);border:1px solid var(--line);border-radius:22px;padding:30px;display:flex;flex-direction:column;gap:12px}
+.node .k{font-family:var(--arcade);font-size:11px;color:var(--faint)}
+.node h3{margin:0;font-size:34px;font-weight:800}
+.node p{margin:0;font-size:19px;color:var(--muted)}
+.node .vis{margin-top:auto;padding-top:18px}
+.arrow{display:grid;place-items:center}
+.arrow svg{width:46px;height:24px;stroke:var(--accent-label);stroke-width:2.5;fill:none;stroke-linecap:round;stroke-linejoin:round}
+.knob{display:flex;flex-direction:column;gap:9px}
+.track{position:relative;height:10px;border-radius:5px;background:linear-gradient(90deg,#3a2330,var(--pam))}
+.track i{position:absolute;top:50%;width:26px;height:26px;border-radius:50%;background:var(--text);border:5px solid var(--pam);transform:translate(-50%,-50%)}
+.stops{display:flex;justify-content:space-between;font-size:14px;color:var(--faint);font-weight:600}
+.decision{height:10px;border-radius:5px;background:linear-gradient(90deg,var(--avoid),#6d5a63 50%,var(--approach));position:relative}
+.decision i{position:absolute;top:-8px;width:4px;height:26px;background:var(--text);border-radius:2px}
+.twins{display:flex;align-items:center;gap:22px;font-size:26px;font-weight:600;margin-top:18px}
+.twins .rule{flex:1;height:1px;background:var(--line-2)}
+
+/* 4 · built */
+.built{display:grid;grid-template-columns:740px 1fr;gap:44px;align-items:start}
+.arena{background:var(--scene);border:1px solid var(--line);border-radius:22px;overflow:hidden}
+.arena svg{display:block;width:100%;height:auto}
+.layers{display:flex;flex-direction:column;gap:18px}
+.layer{display:grid;grid-template-columns:1fr auto;gap:4px 20px;align-items:center;padding:20px 24px;border-radius:18px;background:var(--paper);border:1px solid var(--line)}
+.layer h3{margin:0;font-size:25px;font-weight:800}
+.layer p{margin:0;grid-column:1;font-size:17px;color:var(--muted)}
+.layer .tag{grid-row:1/3;grid-column:2}
+.layer.ours{background:linear-gradient(120deg,#421c2d,#2b1522);border-color:var(--accent-label)}
+.layer.ours .tag{color:var(--primary-ink);background:var(--accent);border-color:transparent}
+.knobs{display:grid;grid-template-columns:1fr 1fr;gap:14px;margin-top:6px}
+.kb{padding:18px 20px;border-radius:16px;border:1px solid var(--line);display:flex;flex-direction:column;gap:12px}
+.kb b{font-size:18px}
+.kb small{color:var(--faint);font-size:14px;font-weight:600}
+.seg{display:grid;grid-template-columns:repeat(3,1fr);border-radius:10px;overflow:hidden;border:1px solid var(--line-2);font-size:14px;font-weight:700;text-align:center}
+.seg span{padding:8px 0;color:var(--muted)}
+.seg span+span{border-left:1px solid var(--line-2)}
+.seg .x{background:#3a2330;color:var(--text)}
+.seg .d{color:#140a10}
+
+/* 5 · results */
+.clips{display:grid;grid-template-columns:repeat(3,1fr);gap:26px}
+.clip{display:flex;flex-direction:column;gap:14px}
+.clip .v{position:relative;aspect-ratio:1520/820;border-radius:16px;overflow:hidden;background:var(--scene);border:1px solid var(--line-2);max-width:100%}
+.clip video{width:100%;height:100%;object-fit:cover;display:block}
+.clip .v .badge{position:absolute;left:12px;top:12px;font-family:var(--arcade);font-size:9px;letter-spacing:.08em;padding:7px 9px;border-radius:6px;background:#170b13d9;color:var(--muted)}
+.clip h3{margin:0;display:flex;align-items:center;gap:10px;font-size:24px;font-weight:800}
+.clip p{margin:0;font-size:17px;color:var(--muted);line-height:1.35}
+.clip .out{font-family:var(--mono);font-size:16px;font-weight:700}
+.tally{display:grid;grid-template-columns:340px 1fr;gap:34px;align-items:center;padding:22px 28px;border-radius:18px;background:var(--paper);border:1px solid var(--line)}
+.tally h4{margin:0 0 6px;font-size:21px}
+.tally .sub{font-size:15px;color:var(--faint);line-height:1.4}
+.rows{display:flex;flex-direction:column;gap:10px}
+.row{display:grid;grid-template-columns:330px auto 70px;align-items:center;gap:18px;font-size:17px;font-weight:600}
+.pips{display:flex;gap:8px}
+.pips i{width:20px;height:20px;border-radius:50%;border:2px solid currentColor;opacity:.9}
+.pips i.f{background:currentColor}
+.row .mono{font-size:19px;font-weight:700;text-align:right}
+
+/* 6 · big question */
+.big{display:grid;grid-template-columns:1fr 720px;gap:60px;align-items:end;flex:1}
+.ladder{position:relative;display:grid;grid-template-columns:repeat(3,1fr);gap:26px;align-items:end;height:500px;padding-bottom:0;border-bottom:1px solid var(--line-2)}
+.rung{display:flex;flex-direction:column;justify-content:flex-end;gap:12px;height:100%}
+.bar{border-radius:14px 14px 0 0;background:var(--paper);border:1px solid var(--line);border-bottom:0;position:relative}
+.rung.here .bar{background:linear-gradient(180deg,var(--accent),var(--accent-soft));border-color:var(--accent-label)}
+.rung.dream .bar{background:repeating-linear-gradient(135deg,#2b1522 0 10px,#25131f 10px 20px)}
+.rung .num{font-family:var(--mono);font-weight:700;font-size:21px}
+.rung .who{font-size:26px;font-weight:800}
+.rung .st{font-size:15px;color:var(--muted);min-height:40px}
+.axis{position:absolute;right:0;top:-30px;font-size:13px;color:var(--faint)}
+.big .qs{display:flex;flex-direction:column;gap:22px;font-size:27px;line-height:1.35;color:var(--muted);padding-bottom:10px}
+.big .qs b{color:var(--text)}
+
+/* 7 · users */
+.plan{display:grid;grid-template-columns:1fr 1fr 1fr;gap:24px;margin-top:10px;min-height:330px}
+.card{border-radius:20px;padding:36px;background:var(--paper);border:1px solid var(--line);display:flex;flex-direction:column;gap:14px}
+.card .k{font-family:var(--arcade);font-size:11px;color:var(--faint);letter-spacing:.08em}
+.card h3{margin:0;font-size:34px;font-weight:800;line-height:1.1}
+.card p{margin:0;font-size:22px;color:var(--muted);line-height:1.45}
+.card ul{margin:0;padding:0;list-style:none;display:flex;flex-direction:column;gap:14px;font-size:22px}
+.card li{position:relative;padding-left:22px}
+.card li::before{content:"";position:absolute;left:0;top:.55em;width:9px;height:9px;border-radius:2px;background:var(--accent-label)}
+.card.hl{background:linear-gradient(150deg,#421c2d,#25131f);border-color:var(--accent-label)}
+.later{display:flex;align-items:center;gap:22px;padding:22px 30px;border-radius:18px;border:1px dashed var(--line-2);font-size:24px;color:var(--muted)}
+.later b{color:var(--text)}
+
+/* 8 · close */
+.close{align-items:center;justify-content:center;gap:34px;padding-top:100px}
+.team{display:flex;gap:40px}
+.member{width:300px;display:flex;flex-direction:column;align-items:center;gap:6px;text-align:center}
+.member b{margin-top:12px;font-size:26px;font-weight:800}
+.member span{font-size:18px;color:var(--muted)}
+.team .av{width:200px;height:200px;border-radius:50%;object-fit:cover;background:radial-gradient(circle at 35% 30%,#5b2439,var(--accent-soft) 70%);border:2px solid var(--accent-label);display:grid;place-items:center;font-family:var(--arcade);font-size:30px;color:var(--accent-label)}
+.thanks{margin:0;font-family:var(--arcade);font-size:22px;letter-spacing:.08em;color:var(--accent-label)}
+.close .qr{width:210px;height:210px;padding:14px;border-radius:18px;background:#f3e5df}
+/* notes */
+#notes{position:fixed;left:0;right:0;bottom:0;max-height:42vh;overflow:auto;z-index:20;padding:16px 22px 20px;background:#0c0509f2;border-top:2px solid var(--accent);font-size:17px;line-height:1.55;color:var(--text)}
+#notes header{display:flex;gap:18px;align-items:center;font-family:var(--mono);font-size:13px;color:var(--accent-label);margin-bottom:8px}
+#notes header #clock{margin-left:auto;font-size:18px;color:var(--text)}
+#notes p{margin:.3em 0;max-width:110ch}
+#notes .cue{color:var(--faint);font-style:italic}
+.hint{position:fixed;right:14px;bottom:10px;font:12px var(--mono);color:#6b5260;z-index:10;transition:opacity .6s}
+</style>
+
+<div class="stage" id="stage">
+  <div class="chrome"><img src="media/chanjs-logo.svg" alt=""><b>CHANJS</b><span>Brain &amp; behavior</span><div class="count" id="count"></div></div>
+
+  <!-- 1 · HOOK (video goes here) -->
+  <section class="slide hook" data-t="0:00–0:15" data-dark>
+    <div class="ph" id="hook-ph">HOOK VIDEO · media/hook.mp4</div>
+    <video id="hook" src="media/hook.mp4" playsinline preload="auto" data-freeze=""></video>
+    <div class="q" id="hook-q" hidden>How much of a fly have we actually recreated?</div>
+    <aside class="notes">
+      <p class="cue">[Press → once: the intro plays with sound (27 s). When it ends, the question appears.]</p>
+      <p>“How much of a fly have we actually recreated?”</p>
+    </aside>
+  </section>
+
+  <!-- 2 · FIELD -->
+  <section class="slide" data-t="0:15–0:40">
+    <div class="head">
+      <div class="kicker">What already exists</div>
+      <h1>The fly's wiring is mapped. <em>Its chemistry isn't.</em></h1>
+    </div>
+    <div class="chain">
+      <div class="step"><span class="n">01</span>
+        <svg viewBox="0 0 64 64"><path d="M10 40 30 30l24 6-20 10Z"/><path d="M10 32 30 22l24 6-20 10Z" opacity=".65"/><path d="M10 24 30 14l24 6-20 10Z" opacity=".35"/></svg>
+        <h3>Slice &amp; scan</h3><p>The brain is cut into thousands of layers, each about 40 nm thin, and imaged by electron microscope.</p>
+        <div class="stat">~40 nm per slice</div></div>
+      <div class="step"><span class="n">02</span>
+        <svg viewBox="0 0 64 64"><circle cx="20" cy="22" r="6"/><path d="M26 22h8l8-8m-8 8 6 12 10 4M34 22l-4 16-8 10M20 28v14l-8 8"/><circle cx="52" cy="38" r="2.5"/><circle cx="42" cy="14" r="2.5"/></svg>
+        <h3>Trace</h3><p>AI segmentation, including Google's, plus human proofreading, follows each neuron and finds its synapses.</p>
+        <div class="stat">138,639 neurons<br>15 M connections</div></div>
+      <div class="step"><span class="n">03</span>
+        <svg viewBox="0 0 64 64"><path d="M6 42h12l4-4 4 4h6l4-30 4 30h6l4-4 4 4h4"/></svg>
+        <h3>Model</h3><p>Each neuron becomes an equation. Spikes flow through the real map.</p>
+        <div class="stat">Shiu et al., Nature 2024</div></div>
+      <div class="step"><span class="n">04</span>
+        <svg viewBox="0 0 64 64"><ellipse cx="32" cy="34" rx="8" ry="14"/><circle cx="32" cy="16" r="5"/><path d="M24 28 12 22m12 12H10m14 6-12 8m28-20 12-6m-12 12h14m-14 6 12 8"/></svg>
+        <h3>Body</h3><p>A physics-simulated fly body that can walk, turn and sense.</p>
+        <div class="stat">NeuroMechFly · MuJoCo</div></div>
+      <div class="step missing"><span class="n">05 · MISSING</span>
+        <svg viewBox="0 0 64 64"><path d="m32 8 20 12v24L32 56 12 44V20Z"/><circle cx="32" cy="32" r="7"/><path d="M32 8v17m0 14v17M12 20l14 8m12 8 14 8M52 20l-14 8m-12 8-14 8" opacity=".5"/></svg>
+        <h3>Chemistry</h3><p>Hormones, neurotransmitters and drugs: the signals that change what the same wiring does.</p>
+        <div class="stat">not yet modeled</div></div>
+    </div>
+    <aside class="notes">
+      <p>“The breakthrough starts with microscopy. Researchers, including teams at Google, help reconstruct neurons and their connections. They cut the fly's brain into extremely thin layers, scanned them, then traced individual neurons across layers and located their synapses, building a 3D map of the brain's wiring. Other teams turn those maps into mathematical brain models and connect them to virtual bodies. But the neural dynamics, basically the connection between the endocrine system, neurotransmitter effects, and physiology, still need to be modeled.”</p>
+    </aside>
+  </section>
+
+  <!-- 3 · QUESTION -->
+  <section class="slide" data-t="0:40–1:05">
+    <div class="head">
+      <div class="kicker">Our question</div>
+      <h1>Same wiring. Different chemistry. <em>Different decision?</em></h1>
+    </div>
+    <div class="flow">
+      <div class="node"><span class="k">CHANGE</span><h3>Chemical state</h3><p>the modeled dopamine signal</p>
+        <div class="vis knob"><div class="track"><i style="left:82%"></i></div><div class="stops"><span>Blocked</span><span>Natural</span><span>Driven</span></div></div></div>
+      <div class="arrow"><svg viewBox="0 0 46 24"><path d="M2 12h40m-10-9 10 9-10 9"/></svg></div>
+      <div class="node"><span class="k">FOLLOW</span><h3>Brain activity</h3><p>the output neurons that vote approach or avoid</p>
+        <div class="vis"><svg viewBox="0 0 300 60" width="100%" height="60" aria-hidden="true">
+          <g stroke="var(--approach)" stroke-width="2.5"><path d="M8 4v20M30 4v20M44 4v20M71 4v20M90 4v20M112 4v20M131 4v20M150 4v20M166 4v20M190 4v20M207 4v20M228 4v20M247 4v20M268 4v20M288 4v20"/></g>
+          <g stroke="var(--avoid)" stroke-width="2.5"><path d="M20 36v20M96 36v20M180 36v20M262 36v20"/></g></svg></div></div>
+      <div class="arrow"><svg viewBox="0 0 46 24"><path d="M2 12h40m-10-9 10 9-10 9"/></svg></div>
+      <div class="node"><span class="k">MEASURE</span><h3>Behavior</h3><p>does the fly reach the food or not?</p>
+        <div class="vis knob"><div class="decision"><i style="left:84%"></i></div><div class="stops"><span style="color:var(--avoid)">Avoid</span><span style="color:var(--approach)">Approach</span></div></div></div>
+    </div>
+    <div class="twins"><span>A hungry fly and a fed fly</span><span class="rule"></span><span style="color:var(--accent-label)">identical wiring, different choices.</span></div>
+    <aside class="notes">
+      <p>“That is where our question began. The same brain model can respond differently when its chemical state changes. The challenge is linking chemical state, brain activity, and behavior in an experiment we can test. We focused on dopamine: change its modeled signal, follow the neural response, and measure the behavior.”</p>
+    </aside>
+  </section>
+
+  <!-- 4 · WHAT WE BUILT -->
+  <section class="slide" data-t="1:05–1:35">
+    <div class="head">
+      <div class="kicker">What we built</div>
+      <h1>Food on the far side of a <em>danger smell.</em></h1>
+    </div>
+    <div class="built">
+      <div class="arena">
+        <svg viewBox="0 0 640 440" role="img" aria-label="Arena: the fly starts on the left, a danger smell sits between it and the food">
+          <defs><pattern id="g" width="40" height="40" patternUnits="userSpaceOnUse"><path d="M40 0H0v40" fill="none" stroke="#f6bacb14"/></pattern></defs>
+          <rect width="640" height="440" fill="url(#g)"/>
+          <g fill="none" stroke="var(--food)"><circle cx="470" cy="190" r="36" opacity=".9"/><circle cx="470" cy="190" r="80" opacity=".55"/><circle cx="470" cy="190" r="130" opacity=".3"/><circle cx="470" cy="190" r="185" opacity=".15"/></g>
+          <g fill="none" stroke="var(--danger)"><circle cx="300" cy="240" r="30" opacity=".9"/><circle cx="300" cy="240" r="66" opacity=".55"/><circle cx="300" cy="240" r="108" opacity=".3"/></g>
+          <circle cx="300" cy="240" r="10" fill="var(--danger)"/>
+          <circle cx="470" cy="190" r="15" fill="#d8292f"/><path d="M470 176c1-6 5-9 9-10" stroke="#6b3b1b" stroke-width="3" fill="none"/>
+          <path d="M92 332C150 340 190 360 250 360S380 330 420 280 452 214 462 204" fill="none" stroke="var(--approach)" stroke-width="3" stroke-dasharray="2 9" stroke-linecap="round"/>
+          <path d="M92 332C160 300 220 262 280 248" fill="none" stroke="var(--avoid)" stroke-width="3" stroke-dasharray="2 9" stroke-linecap="round" opacity=".8"/>
+          <g transform="translate(86 334) rotate(-20)"><ellipse rx="11" ry="6" fill="#e9d8c7"/><circle cx="10" r="4" fill="#b8392c"/></g>
+          <g font-family="Inter,sans-serif" font-size="15" font-weight="700" letter-spacing=".06em">
+            <text x="50" y="378" fill="var(--muted)">START</text>
+            <text x="300" y="296" fill="var(--danger)" text-anchor="middle">DANGER SMELL</text>
+            <text x="300" y="316" fill="var(--faint)" font-weight="500" letter-spacing="0" text-anchor="middle">geosmin · CO₂</text>
+            <text x="500" y="160" fill="var(--food)">FOOD</text>
+            <text x="300" y="402" fill="var(--approach)">commit → reach food</text>
+            <text x="150" y="236" fill="var(--avoid)">hesitate</text>
+          </g>
+        </svg>
+      </div>
+      <div class="layers">
+        <div class="layer"><h3>Reconstructed wiring</h3><p>FlyWire connectome · 138,639 neurons</p><span class="tag">published data</span></div>
+        <div class="layer ours"><h3>Dopamine mechanism</h3><p>323 dopamine neurons whose release reshapes the choice</p><span class="tag">our layer</span></div>
+        <div class="layer"><h3>Physics body</h3><p>NeuroMechFly walking on MuJoCo physics</p><span class="tag">open source</span></div>
+        <div class="knobs">
+          <div class="kb"><b>Reward dopamine <small>· PAM</small></b><div class="seg"><span class="x">Block</span><span>Natural</span><span class="d" style="background:var(--pam)">Stimulate</span></div></div>
+          <div class="kb"><b>Punishment dopamine <small>· PPL1</small></b><div class="seg"><span class="x">Block</span><span>Natural</span><span class="d" style="background:var(--ppl1)">Stimulate</span></div></div>
+        </div>
+      </div>
+    </div>
+    <aside class="notes">
+      <p>“We built Chanjs around a simple trade-off: reaching food despite a smell that signals danger. We approached it as engineers, with Astra helping us work through the research and implementation. The prototype combines reconstructed fly wiring, a modeled dopamine mechanism, and an existing physics body. We can stimulate or block reward-linked dopamine signaling and inspect the consequences.”</p>
+    </aside>
+  </section>
+
+  <!-- 5 · RESULTS -->
+  <section class="slide" data-t="1:35–2:20" style="gap:24px">
+    <div class="head">
+      <div class="kicker">Results</div>
+      <h1 style="font-size:58px">One setting changed. <em>A different fly.</em></h1>
+    </div>
+    <div class="clips">
+      <div class="clip"><div class="v"><video src="media/clip-food.mp4" muted loop playsinline preload="auto" data-loop></video><span class="badge">FOOD ATTRACTION ↑</span></div>
+        <h3><span class="dot" style="color:var(--pam)"></span>Reward dopamine stimulated</h3>
+        <p>The decision swings to approach. The fly steers around the danger to the food.</p>
+        <span class="out" style="color:var(--approach)">✓ reaches food · 2.56 s</span></div>
+      <div class="clip"><div class="v"><video src="media/clip-brake.mp4" muted loop playsinline preload="auto" data-loop></video><span class="badge">APPROACH BRAKE ↑</span></div>
+        <h3><span class="dot" style="color:var(--ppl1)"></span>Punishment dopamine stimulated</h3>
+        <p>The approach signal drops to neutral. The fly hesitates and walks away.</p>
+        <span class="out" style="color:var(--avoid)">✗ never reaches food</span></div>
+      <div class="clip"><div class="v"><video src="media/clip-nodanger.mp4" muted loop playsinline preload="auto" data-loop></video><span class="badge">DANGER STRENGTH 0</span></div>
+        <h3><span class="dot" style="color:var(--danger)"></span>Danger smell switched off</h3>
+        <p>Nothing warns the fly. It walks straight under the newspaper.</p>
+        <span class="out" style="color:var(--danger)">✗ swatted · 0.82 s</span></div>
+    </div>
+    <div class="tally">
+      <div><h4>Full physics simulation</h4><div class="sub">8 runs per setting, different random seeds. Food reached:</div></div>
+      <div class="rows">
+        <div class="row"><span>Baseline, natural dopamine</span><span class="pips" style="color:var(--muted)"><i class="f"></i><i class="f"></i><i class="f"></i><i></i><i></i><i></i><i></i><i></i></span><span class="mono">3/8</span></div>
+        <div class="row"><span style="color:var(--pam)">Reward dopamine stimulated</span><span class="pips" style="color:var(--pam)"><i class="f"></i><i class="f"></i><i class="f"></i><i class="f"></i><i class="f"></i><i class="f"></i><i class="f"></i><i class="f"></i></span><span class="mono">8/8</span></div>
+        <div class="row"><span style="color:var(--ppl1)">Punishment dopamine stimulated</span><span class="pips" style="color:var(--ppl1)"><i class="f"></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i></span><span class="mono">1/8</span></div>
+      </div>
+    </div>
+    <aside class="notes">
+      <p class="cue">[The three clips loop. Point left → middle → right.]</p>
+      <p>“These are recordings from our simulator: same fly, same brain, same arena. We change one setting at a time.</p>
+      <p>Left: we stimulate reward dopamine. The brain's decision swings to approach, and the fly works its way around the danger to the food.</p>
+      <p>Middle: we stimulate punishment dopamine instead. The approach signal collapses. The fly hesitates and walks away.</p>
+      <p>Right: we switch the danger smell off. Nothing warns the fly, and it walks straight under the newspaper.</p>
+      <p>In the full physics simulation, eight runs per setting, the pattern holds: the fly reaches the food 3 times out of 8 at baseline, 8 out of 8 with reward dopamine stimulated, and 1 out of 8 with punishment dopamine stimulated. Small samples, but a clear signal we can test.”</p>
+    </aside>
+  </section>
+
+  <!-- 6 · BIG QUESTION -->
+  <section class="slide" data-t="2:20–2:50">
+    <div class="head">
+      <div class="kicker">The bigger question</div>
+      <h1>If we copy part of a brain, <em>how much behavior emerges on its own?</em></h1>
+    </div>
+    <div class="big">
+      <div class="qs">
+        <p style="margin:0"><b>Which parts of the wiring and chemistry are enough</b> to explain a behavior?</p>
+        <p style="margin:0"><b>What are we still missing?</b></p>
+        <p style="margin:0">A partial digital copy turns both into experiments.</p>
+      </div>
+      <!-- bar heights ∝ log10(neurons): 5.14 / 7.85 / 10.93 of 10.93 → 47% / 72% / 100% of 340px -->
+      <div class="ladder">
+        <span class="axis">neurons · log scale</span>
+        <div class="rung here"><div class="num">138,639</div><div class="who">Fly</div><div class="st">whole brain mapped · we are here</div><div class="bar" style="height:160px"></div></div>
+        <div class="rung"><div class="num">~70 million</div><div class="who">Mouse</div><div class="st">1 mm³ of cortex mapped so far</div><div class="bar" style="height:244px"></div></div>
+        <div class="rung dream"><div class="num">~86 billion</div><div class="who">Human</div><div class="st">the long-term direction</div><div class="bar" style="height:340px"></div></div>
+      </div>
+    </div>
+    <aside class="notes">
+      <p>“If we recreate parts of an animal's brain, how much of its behavior can emerge on its own? Building a partial digital copy turns that question into an experiment: which parts of the wiring and chemistry are enough to explain behavior, and what are we still missing? We start with flies, then aim to extend this approach to larger mammals as more complete brain maps become available.”</p>
+    </aside>
+  </section>
+
+  <!-- 7 · USERS & BUSINESS -->
+  <section class="slide" data-t="2:50–3:25">
+    <div class="head">
+      <div class="kicker">Who it's for</div>
+      <h1>Labs have more questions <em>than time and money.</em></h1>
+    </div>
+    <div class="plan">
+      <div class="card"><span class="k">TODAY</span><h3>One pathway at a time</h3>
+        <p>A fly lab stimulates or blocks a brain pathway with genetics and light. Each experiment can take weeks of breeding and testing.</p></div>
+      <div class="card hl"><span class="k">WITH CHANJS · ONCE VALIDATED</span><h3>Test in simulation first</h3>
+        <p>Try every pathway on the digital fly and rank which one to stimulate or block next. Fewer experiments, more useful answers.</p></div>
+      <div class="card"><span class="k">HOW WE CHARGE</span><h3>Setup + access</h3>
+        <ul><li>Model setup for the lab's experiment</li><li>Software access for the team</li></ul></div>
+    </div>
+    <div class="later"><span class="kicker" style="color:var(--faint)">Later</span><span><b>Biotech:</b> validated models of drug effects help teams narrow down which compounds to test in animals.</span></div>
+    <aside class="notes">
+      <p>“Research labs have more questions than time and money to test them. Our goal is to help them get useful answers with fewer experiments. Once validated, Chanjs could help a fly research lab choose which brain pathway to stimulate or block next. We would charge for model setup and software access. Longer term, validated models of drug effects could help biotech teams narrow down which compounds to test in animals.”</p>
+    </aside>
+  </section>
+
+  <!-- 8 · CLOSE -->
+  <section class="slide close" data-t="3:25–3:50">
+    <div class="team"><div class="member"><img class="av" src="media/team-david.jpg" alt="David Karyan"><b>David Karyan</b><span>AI Automation Engineer</span></div><div class="member"><img class="av" src="media/team-grigori.jpg" alt="Grigori Grigoryan"><b>Grigori Grigoryan</b><span>Full Stack Engineer</span></div><div class="member"><img class="av" src="media/team-hakob.jpg" alt="Hakob Petrosyan"><b>Hakob Petrosyan</b><span>ML Engineer</span></div></div>
+    <img class="qr" src="media/qr.svg" alt="QR code to chanjs.vercel.app/embodied/sandbox">
+    <p class="thanks">THANK YOU FOR YOUR ATTENTION!</p>
+    <aside class="notes">
+      <p>“We are David Karyan, AI automation engineer; Grigori Grigoryan, full-stack engineer; and Hakob Petrosyan, ML engineer. Scan to explore the interactive preview, and find our code and contact details. Start with one neurotransmitter. Earn trust one experiment at a time.”</p>
+    </aside>
+  </section>
+
+  <div class="progress" id="progress"></div>
+</div>
+
+<div id="notes" hidden><header><span id="nslide"></span><span id="ntime"></span><span id="clock">0:00</span></header><div id="nbody"></div></div>
+<div class="hint" id="hint">← → navigate · N notes · F fullscreen · T reset timer</div>
+
+<script>
+const stage = document.getElementById('stage');
+const slides = [...stage.querySelectorAll('.slide')];
+const main = slides.length;
+const hook = document.getElementById('hook'), hookQ = document.getElementById('hook-q'), hookPh = document.getElementById('hook-ph');
+let cur = 0, t0 = null, hookMissing = false;
+
+function fit() {
+  const s = Math.min(innerWidth / 1600, innerHeight / 900);
+  stage.style.transform = `translate(-50%,-50%) scale(${s})`;
+}
+addEventListener('resize', fit); fit();
+
+// Hook: first "next" plays it; it freezes at data-freeze seconds and the question appears.
+hook.addEventListener('loadeddata', () => { hookPh.hidden = true; });
+hook.addEventListener('error', () => { hookMissing = true; hookPh.hidden = false; hook.hidden = true; });
+const freezeAt = +hook.dataset.freeze || Infinity; // set data-freeze="8" to cut the intro early
+function checkFreeze() { if (hook.currentTime >= freezeAt) { hook.pause(); hookQ.hidden = false; } }
+hook.addEventListener('timeupdate', checkFreeze);
+hook.addEventListener('ended', () => { hookQ.hidden = false; });
+function hookPending() { return cur === 0 && !hookMissing && hookQ.hidden && hook.paused; }
+function playHook() { hook.play().catch(() => { hook.muted = true; hook.play().catch(() => {}); });
+  (function watch() { if (!hook.paused) { checkFreeze(); requestAnimationFrame(watch); } })(); }
+
+function show(n) {
+  n = Math.max(0, Math.min(slides.length - 1, n));
+  slides[cur].classList.remove('on');
+  slides[cur].querySelectorAll('video').forEach(v => v.pause()); // incl. the intro, so it stops when you move on
+  cur = n;
+  const s = slides[cur];
+  s.classList.add('on');
+  stage.classList.toggle('dark', s.hasAttribute('data-dark'));
+  stage.classList.toggle('nochrome', s.hasAttribute('data-nochrome'));
+  if (cur === 0) { hook.pause(); hook.currentTime = 0; hookQ.hidden = true; }
+  s.querySelectorAll('video[data-loop]').forEach(v => { v.currentTime = 0; v.play().catch(() => {}); });
+  document.getElementById('count').textContent = `${String(cur + 1).padStart(2, '0')} / ${String(main).padStart(2, '0')}`;
+  document.getElementById('progress').style.width = `${(cur + 1) / main * 100}%`;
+  document.getElementById('nslide').textContent = `Slide ${cur + 1}/${main}`;
+  document.getElementById('ntime').textContent = s.dataset.t || '';
+  document.getElementById('nbody').innerHTML = s.querySelector('aside.notes')?.innerHTML || '';
+  try { history.replaceState(null, '', '#s' + (cur + 1)); } catch {}
+}
+function next() { if (t0 === null) t0 = Date.now(); if (hookPending()) return playHook(); show(cur + 1); }
+function prev() { show(cur - 1); }
+
+addEventListener('keydown', e => {
+  const k = e.key;
+  if (['ArrowRight', 'PageDown', ' ', 'Enter'].includes(k)) { e.preventDefault(); next(); }
+  else if (['ArrowLeft', 'PageUp', 'Backspace'].includes(k)) { e.preventDefault(); prev(); }
+  else if (k === 'Home') show(0);
+  else if (k === 'End') show(main - 1);
+  else if (k === 'n' || k === 'N') document.getElementById('notes').hidden ^= 1;
+  else if (k === 't' || k === 'T') t0 = Date.now();
+  else if (k === 'f' || k === 'F') { document.fullscreenElement ? document.exitFullscreen?.() : document.documentElement.requestFullscreen?.().catch(() => {}); }
+});
+stage.addEventListener('click', e => { const r = stage.getBoundingClientRect(); (e.clientX - r.left < r.width / 3) ? prev() : next(); });
+setInterval(() => {
+  if (t0 === null) return;
+  const s = Math.floor((Date.now() - t0) / 1000);
+  document.getElementById('clock').textContent = `${Math.floor(s / 60)}:${String(s % 60).padStart(2, '0')}`;
+}, 500);
+setTimeout(() => document.getElementById('hint').style.opacity = 0, 5000);
+
+// The 404 can land before this script runs; and a hidden tab pauses videos, so resume when it's back.
+if (hook.error) { hookMissing = true; hookPh.hidden = false; hook.hidden = true; }
+const playActive = () => slides[cur].querySelectorAll('video[data-loop]').forEach(v => v.play().catch(() => {}));
+document.addEventListener('visibilitychange', () => { if (!document.hidden) playActive(); });
+document.querySelectorAll('video[data-loop]').forEach(v => v.addEventListener('canplay', () => { if (v.closest('.slide') === slides[cur]) v.play().catch(() => {}); }));
+
+const m = /^#s(\d+)$/.exec(location.hash);
+show(m ? +m[1] - 1 : 0);
+</script>
